@@ -25,3 +25,236 @@ button {
   background: #CCC;
   border-radius: 4px;
 }
+
+/* === Top Nav === */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: #1A1A1A;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 52px;
+  gap: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+
+/* === BusinessPlan === */
+.plan-hero {
+  background: #1A1A1A;
+  padding: 40px 20px 32px;
+  text-align: center;
+}
+
+.plan-hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 36px;
+  color: #F5F0E8;
+  margin: 0 0 8px;
+  line-height: 1.1;
+}
+
+.plan-content {
+  padding: 24px 20px 60px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.section-head h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  margin: 0;
+}
+
+/* === ScreenDesign === */
+.screen-header {
+  background: #1A1A1A;
+  padding: 28px 20px 20px;
+}
+
+.screen-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: #F5F0E8;
+  margin: 0 0 4px;
+}
+
+.screen-flow-desc {
+  padding: 16px 20px 8px;
+}
+
+.screen-phones-wrapper {
+  display: flex;
+  gap: 0;
+  padding: 16px 20px 48px;
+  overflow-x: auto;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.phone-frame {
+  width: 260px;
+  height: 520px;
+  border-radius: 28px;
+  border: 3px solid #1A1A1A;
+  background: #FFFFFF;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+.phone-annotation {
+  width: 260px;
+  font-size: 11px;
+  color: #888;
+  line-height: 1.5;
+  text-align: center;
+  padding: 0 8px;
+}
+
+.phone-content {
+  height: 390px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* === Tablet (768px+) === */
+@media (min-width: 768px) {
+  .top-nav {
+    padding: 0 32px;
+    height: 56px;
+  }
+
+  .plan-hero {
+    padding: 56px 32px 40px;
+  }
+
+  .plan-hero h1 {
+    font-size: 52px;
+  }
+
+  .plan-content {
+    max-width: 720px;
+    padding: 32px 32px 60px;
+  }
+
+  .section-head h2 {
+    font-size: 32px;
+  }
+
+  .screen-header {
+    padding: 36px 32px 28px;
+  }
+
+  .screen-header h1 {
+    font-size: 36px;
+  }
+
+  .screen-flow-desc {
+    padding: 24px 32px 8px;
+  }
+
+  .screen-phones-wrapper {
+    padding: 24px 32px 56px;
+    gap: 0;
+  }
+
+  .phone-frame {
+    width: 300px;
+    height: 600px;
+  }
+
+  .phone-annotation {
+    width: 300px;
+    font-size: 12px;
+  }
+
+  .phone-content {
+    height: 470px;
+  }
+}
+
+/* === Desktop (1024px+) === */
+@media (min-width: 1024px) {
+  .top-nav {
+    padding: 0 48px;
+    height: 60px;
+  }
+
+  .plan-hero {
+    padding: 64px 48px 48px;
+  }
+
+  .plan-hero h1 {
+    font-size: 60px;
+  }
+
+  .plan-content {
+    max-width: 860px;
+    padding: 40px 40px 80px;
+  }
+
+  .section-head h2 {
+    font-size: 36px;
+  }
+
+  .screen-header {
+    padding: 48px 48px 32px;
+    text-align: center;
+  }
+
+  .screen-header h1 {
+    font-size: 42px;
+  }
+
+  .screen-flow-desc {
+    padding: 28px 48px 12px;
+    text-align: center;
+  }
+
+  .screen-phones-wrapper {
+    padding: 32px 48px 64px;
+    justify-content: center;
+  }
+
+  .phone-frame {
+    width: 320px;
+    height: 640px;
+  }
+
+  .phone-annotation {
+    width: 320px;
+    font-size: 12px;
+    padding: 0 12px;
+  }
+
+  .phone-content {
+    height: 510px;
+  }
+}
+
+/* === Wide Desktop (1280px+) === */
+@media (min-width: 1280px) {
+  .plan-content {
+    max-width: 960px;
+  }
+
+  .plan-hero h1 {
+    font-size: 68px;
+  }
+
+  .phone-frame {
+    width: 340px;
+    height: 680px;
+  }
+
+  .phone-annotation {
+    width: 340px;
+  }
+
+  .phone-content {
+    height: 550px;
+  }
+}

@@ -13,18 +13,7 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", background: "#F8F7F3" }}>
       {/* Top nav */}
-      <nav style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 999,
-        background: "#1A1A1A",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 16px",
-        height: "52px",
-        gap: "8px",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
-      }}>
+      <nav className="top-nav">
         <div style={{
           fontFamily: "'DM Serif Display', serif",
           fontSize: "18px",
