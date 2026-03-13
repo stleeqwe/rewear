@@ -1,0 +1,181 @@
+/* ==========================================================================
+   LEAFIT "Electric Garden" Design System
+   ========================================================================== */
+
+/* --- Font Imports --- */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+/* --- CSS Custom Properties --- */
+:root {
+  /* Color Palette */
+  --color-lime:       #BEFF0A;
+  --color-forest:     #1A3C20;
+  --color-chalk:      #F7F5F0;
+  --color-off-black:  #111111;
+  --color-neon-mint:  #4DFFA6;
+  --color-hot-coral:  #FF6B6B;
+  --color-butter:     #FFE566;
+  --color-smoke:      #2A2A2A;
+  --color-mist:       #E8E5DD;
+  --color-sponsored:  #F0FFF0;
+
+  /* Extended / Derived Colors */
+  --color-forest-active: #2D5A27;
+  --color-neon-mint-15:  rgba(77, 255, 166, 0.15);
+  --color-overlay:       rgba(0, 0, 0, 0.314);
+
+  /* Typography — Font Families */
+  --font-logo:       'DM Serif Display', serif;
+  --font-title:      'Outfit', 'SUIT', sans-serif;
+  --font-body:       'Pretendard Variable', 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-number:     'Outfit', sans-serif;
+  --font-emphasis:   'Outfit', sans-serif;
+
+  /* Typography — Sizes */
+  --text-logo:       22px;
+  --text-page-title: 20px;
+  --text-section:    16px;
+  --text-body:       14px;
+  --text-sub:        12px;
+  --text-caption:    11px;
+  --text-number-lg:  44px;
+  --text-number-md:  32px;
+
+  /* Typography — Weights */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-bold:     700;
+  --weight-extra:    800;
+
+  /* Spacing */
+  --space-2:   2px;
+  --space-4:   4px;
+  --space-6:   6px;
+  --space-8:   8px;
+  --space-10:  10px;
+  --space-12:  12px;
+  --space-14:  14px;
+  --space-16:  16px;
+  --space-20:  20px;
+  --space-24:  24px;
+  --space-32:  32px;
+  --space-40:  40px;
+  --space-48:  48px;
+
+  /* Border Radius */
+  --radius-card:      16px;
+  --radius-button:    14px;
+  --radius-chip:      20px;
+  --radius-circle:    50%;
+  --radius-input:     12px;
+  --radius-toast:     50px;
+  --radius-modal:     20px;
+  --radius-thumbnail: 12px;
+  --radius-fab:       50%;
+  --radius-badge:     20px;
+  --radius-dark-card: 18px;
+
+  /* Shadows */
+  --shadow-card:     0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-fab:      0 4px 20px rgba(190, 255, 10, 0.3);
+  --shadow-dark:     0 8px 24px rgba(0, 0, 0, 0.2);
+  --shadow-modal:    0 16px 48px rgba(0, 0, 0, 0.15);
+
+  /* Tab Bar */
+  --tab-height:      70px;
+  --tab-border:      #F0EDE5;
+
+  /* Transitions */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow:   0.3s ease;
+}
+
+/* --- Base Reset (extending existing) --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* --- Base Typography --- */
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-off-black);
+  background: var(--color-chalk);
+}
+
+/* --- Keyframe Animations --- */
+@keyframes eg-toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateX(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+@keyframes eg-toast-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) translateX(-50%);
+  }
+}
+
+@keyframes eg-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes eg-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes eg-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes eg-slide-down {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+
+@keyframes eg-scale-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes eg-scale-out {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+/* --- Utility: Button Press --- */
+@keyframes eg-btn-press {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}

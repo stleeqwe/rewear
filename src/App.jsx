@@ -1,36 +1,39 @@
 import { useState } from "react";
 import BusinessPlan from "./components/BusinessPlan";
+import Branding from "./components/Branding";
 import ScreenDesign from "./components/ScreenDesign";
+import TechArchitecture from "./components/TechArchitecture";
+import ElectricGardenColors from "./components/ElectricGardenColors";
+import { LeafitInline } from "./components/common/LeafitLogo";
 
 const pages = [
   { id: "plan", label: "사업 기획서", icon: "📄" },
-  { id: "screen", label: "화면설계서", icon: "📱" },
+  { id: "brand", label: "브랜딩", icon: "🎨" },
+  { id: "screen", label: "화면설계서 v2.1", icon: "📱" },
+  { id: "tech", label: "시스템 아키텍처", icon: "⚙️" },
+  { id: "colors", label: "컬러 팔레트", icon: "🌿" },
 ];
 
 export default function App() {
-  const [page, setPage] = useState("plan");
+  const [page, setPage] = useState("brand");
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F8F7F3" }}>
+    <div style={{ minHeight: "100vh", background: "#F7F5F0" }}>
       {/* Top nav */}
       <nav className="top-nav">
-        <div style={{
-          fontFamily: "'DM Serif Display', serif",
-          fontSize: "18px",
-          color: "#F5F0E8",
-          marginRight: "auto",
-          letterSpacing: "0.5px",
-        }}>RE:WEAR</div>
+        <div style={{ marginRight: "auto" }}>
+          <LeafitInline fontSize={18} dark={true} />
+        </div>
         {pages.map((p) => (
           <button
             key={p.id}
             onClick={() => setPage(p.id)}
             style={{
               padding: "8px 16px",
-              borderRadius: "8px",
+              borderRadius: "10px",
               border: "none",
-              background: page === p.id ? "#2D5A27" : "transparent",
-              color: page === p.id ? "#FFF" : "#888",
+              background: page === p.id ? "#BEFF0A" : "transparent",
+              color: page === p.id ? "#1A3C20" : "#A8D5A0",
               fontSize: "13px",
               fontWeight: page === p.id ? 700 : 400,
               cursor: "pointer",
@@ -47,7 +50,11 @@ export default function App() {
       </nav>
 
       {/* Content */}
-      {page === "plan" ? <BusinessPlan /> : <ScreenDesign />}
+      {page === "plan" && <BusinessPlan />}
+      {page === "brand" && <Branding />}
+      {page === "screen" && <ScreenDesign />}
+      {page === "tech" && <TechArchitecture />}
+      {page === "colors" && <ElectricGardenColors />}
     </div>
   );
 }
