@@ -540,11 +540,48 @@ export function ScreenLogin() {
           </svg>
           Apple로 시작하기
         </div>
+
+        {/* Phone */}
+        <div style={{
+          background: '#FFFFFF',
+          color: COLORS.offBlack,
+          padding: '15px 20px',
+          borderRadius: '12px',
+          fontSize: '14px',
+          fontWeight: 600,
+          textAlign: 'center',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          border: `1.5px solid ${COLORS.mist}`,
+        }}>
+          <span style={{ fontSize: '16px' }}>📱</span>
+          전화번호로 시작하기
+        </div>
+      </div>
+
+      {/* Browse without login */}
+      <div style={{
+        textAlign: 'center',
+        padding: '14px 28px 0',
+      }}>
+        <span style={{
+          fontSize: '13px',
+          color: '#999',
+          cursor: 'pointer',
+          textDecoration: 'underline',
+          textDecorationColor: '#CCC',
+          textUnderlineOffset: '3px',
+        }}>
+          둘러보기
+        </span>
       </div>
 
       {/* Terms */}
       <div style={{
-        padding: '24px 28px 28px',
+        padding: '14px 28px 28px',
         textAlign: 'center',
       }}>
         <div style={{
@@ -701,6 +738,134 @@ export function ScreenLocation() {
         }}>
           검색으로 변경하기
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== 6b. PHONE LOGIN SCREEN =====
+export function ScreenPhoneLogin() {
+  return (
+    <div style={{
+      width: '100%',
+      height: '100%',
+      background: COLORS.chalk,
+      display: 'flex',
+      flexDirection: 'column',
+      fontFamily: fonts.body,
+      position: 'relative',
+    }}>
+      {/* Header */}
+      <div style={{
+        padding: '24px 24px 16px',
+      }}>
+        <div style={{ fontSize: '16px', cursor: 'pointer', marginBottom: '16px' }}>←</div>
+        <div style={{
+          fontSize: '20px',
+          fontWeight: 800,
+          color: COLORS.offBlack,
+          lineHeight: 1.4,
+          letterSpacing: '-0.5px',
+        }}>
+          전화번호로 시작하기
+        </div>
+        <div style={{
+          fontSize: '12px',
+          color: '#999',
+          marginTop: '4px',
+        }}>
+          인증번호를 보내드릴게요
+        </div>
+      </div>
+
+      {/* Phone number input */}
+      <div style={{ padding: '0 24px', marginBottom: '20px' }}>
+        <div style={{
+          fontSize: '10px',
+          fontWeight: 600,
+          color: '#666',
+          marginBottom: '6px',
+        }}>
+          전화번호
+        </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <div style={{
+            background: '#F0EDE5',
+            border: `1.5px solid ${COLORS.mist}`,
+            borderRadius: '10px',
+            padding: '12px 14px',
+            fontSize: '13px',
+            color: COLORS.offBlack,
+            fontWeight: 600,
+            flexShrink: 0,
+          }}>
+            +82
+          </div>
+          <div style={{
+            flex: 1,
+            background: '#FFF',
+            border: `1.5px solid ${COLORS.forest}40`,
+            borderRadius: '10px',
+            padding: '12px 14px',
+            fontSize: '13px',
+            color: '#AAA',
+          }}>
+            010-0000-0000
+          </div>
+        </div>
+      </div>
+
+      {/* OTP input */}
+      <div style={{ padding: '0 24px', marginBottom: '20px' }}>
+        <div style={{
+          fontSize: '10px',
+          fontWeight: 600,
+          color: '#666',
+          marginBottom: '6px',
+        }}>
+          인증번호 6자리
+        </div>
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          justifyContent: 'center',
+        }}>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <div key={i} style={{
+              width: '40px',
+              height: '48px',
+              borderRadius: '10px',
+              border: i === 0 ? `2px solid ${COLORS.forest}` : `1.5px solid ${COLORS.mist}`,
+              background: '#FFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              fontWeight: 700,
+              color: COLORS.offBlack,
+              fontFamily: "'Outfit', sans-serif",
+            }}>
+              {i === 0 ? '|' : ''}
+            </div>
+          ))}
+        </div>
+        <div style={{
+          textAlign: 'center',
+          marginTop: '10px',
+          fontSize: '11px',
+          color: '#999',
+        }}>
+          <span style={{ color: COLORS.hotCoral, fontWeight: 600, fontFamily: "'Outfit', sans-serif" }}>2:59</span> 남음 · <span style={{ textDecoration: 'underline', color: '#888', cursor: 'pointer' }}>재전송</span>
+        </div>
+      </div>
+
+      {/* Verify button */}
+      <div style={{ marginTop: 'auto', padding: '0 24px 28px' }}>
+        <CTAButton text="인증하기" />
       </div>
     </div>
   );

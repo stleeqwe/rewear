@@ -119,7 +119,7 @@ export default function TechArchitecture() {
           <div style={{
             fontSize: 10, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase",
             color: C.neonMint, marginBottom: 16, fontFamily: "'Outfit', sans-serif",
-          }}>System Architecture v1.0</div>
+          }}>System Architecture v1.2</div>
           <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 12 }}>
             <LogoWithLeaf size={0.85} dark={true} />
             <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 28, color: "#666", lineHeight: 1 }}>Tech</span>
@@ -127,7 +127,7 @@ export default function TechArchitecture() {
           <div style={{ fontSize: 13, color: "#888", lineHeight: 1.6 }}>
             기술 스택 · 시스템 아키텍처 · 데이터베이스 설계
             <br />
-            <span style={{ fontSize: 11, color: "#666" }}>최종 수정: 2026.03.11</span>
+            <span style={{ fontSize: 11, color: "#666" }}>최종 수정: 2026.03.17</span>
           </div>
         </div>
       </div>
@@ -334,7 +334,7 @@ export default function TechArchitecture() {
                   <div style={{ fontSize: 14, fontWeight: 800, color: C.lime, marginBottom: 12 }}>Supabase</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
                     {[
-                      { name: "Auth", desc: "카카오 OAuth · Apple Sign-In · JWT", icon: "🔐" },
+                      { name: "Auth", desc: "카카오 OAuth · Apple · Phone OTP · Anonymous · JWT", icon: "🔐" },
                       { name: "PostgreSQL", desc: "RLS 전체 적용 · DB Functions · Full-Text Search", icon: "🗄️" },
                       { name: "Realtime", desc: "채팅 WebSocket · 거래 상태 구독", icon: "⚡" },
                       { name: "Storage (S3)", desc: "옷 사진 원본 저장 · 버킷 정책", icon: "📁" },
@@ -365,6 +365,8 @@ export default function TechArchitecture() {
                         "verify-invite — 초대 코드",
                         "check-report — 신고/제재",
                         "sponsor-serve — 광고 기록",
+                        "delete-account — 계정 삭제",
+                        "item-page — 아이템 공유",
                       ].map((f, i) => (
                         <span key={i} style={{
                           fontSize: 10, background: `${C.neonMint}15`, color: C.neonMint,
@@ -440,6 +442,8 @@ export default function TechArchitecture() {
                   { from: "trades", rel: "1:N", to: "messages" },
                   { from: "users", rel: "N:M", to: "items (via wishlist)" },
                   { from: "sponsored_items", rel: "독립", to: "외부 광고 데이터" },
+                  { from: "users", rel: "1:N", to: "blocks (blocker_id)" },
+                  { from: "items", rel: "1:N", to: "ai_review_logs" },
                 ].map((r, i) => (
                   <div key={i} style={{
                     display: "flex", alignItems: "center", gap: 8,
@@ -471,6 +475,9 @@ export default function TechArchitecture() {
                   ["push_token", "FCM 토큰"],
                   ["notification_*", "알림 설정 (채팅/거래/키워드)"],
                   ["is_suspended", "정지 여부"],
+                  ["profile_emoji", "프로필 동물 이모지 (24종)"],
+                  ["active_session_id", "중복 로그인 방지용 세션 ID"],
+                  ["consecutive_fails", "연속 검수 실패 횟수 (5회 시 정지)"],
                 ],
               },
               {
@@ -480,9 +487,10 @@ export default function TechArchitecture() {
                   ["title / description", "상품명 + 설명"],
                   ["category / size / condition", "카테고리 · 사이즈 · 상태"],
                   ["trade_methods", "TEXT[] — 반값택배/직거래/일반택배"],
-                  ["status", "reviewing → active → reserved → swapped/donated"],
+                  ["status", "reviewing → active → reserved → swapped → donated / rejected / deleted"],
                   ["view_count", "조회수"],
                   ["area / lat / lng", "등록 위치"],
+                  ["rejection_reason", "검수 불합격 사유"],
                 ],
                 indexes: ["status 필터", "카테고리 필터", "유저별 조회", "GIN 한글 텍스트 검색"],
               },
@@ -490,7 +498,7 @@ export default function TechArchitecture() {
                 name: "trades", desc: "거래 상태 머신 (채팅 → 예약 → 완료)",
                 fields: [
                   ["item_id / seller_id / buyer_id", "FK 관계"],
-                  ["status", "chatting → reserved → completed/cancelled/reported"],
+                  ["status", "chatting → reserved → completed / cancelled / reported / refunded"],
                   ["trade_method", "합의된 거래 방법"],
                   ["report_deadline", "completed_at + 48시간"],
                   ["buyer_rating", "good / bad"],
@@ -541,6 +549,9 @@ export default function TechArchitecture() {
                   { name: "reports", desc: "신고 (대상 유형/ID, 사유, 처리 상태)" },
                   { name: "notifications", desc: "알림 (유형, 제목, 참조, 읽음 여부)" },
                   { name: "sponsored_items", desc: "광고 (브랜드, 노출/클릭 카운트, 기간)" },
+                  { name: "ai_review_logs", desc: "AI 검수 결과 로그 (판정, 사유, 소요시간)" },
+                  { name: "blocks", desc: "차단 유저 관계 (blocker_id + blocked_id)" },
+                  { name: "deleted_identifiers", desc: "탈퇴 유저 식별정보 재가입 방지" },
                 ].map((t, i) => (
                   <div key={i} style={{
                     background: "#FFFFFF08", borderRadius: 12, padding: "12px 14px",
@@ -634,8 +645,8 @@ export default function TechArchitecture() {
               {[
                 { dir: "core/", desc: "Electric Garden 테마(colors, typography), Supabase 클라이언트, GoRouter 라우트, 상수", color: C.forest },
                 { dir: "models/", desc: "user, item, trade, message, notification, leaf_transaction 데이터 모델 (Freezed 불변 객체)", color: C.neonMint },
-                { dir: "services/", desc: "auth, item, trade, chat, leaf, image, push, location 서비스 레이어", color: C.butter },
-                { dir: "providers/", desc: "Riverpod Provider — auth, items, trade, chat, leaf, badge, wishlist, notification, profile", color: C.hotCoral },
+                { dir: "services/", desc: "auth, item, trade, chat, leaf, image, push, location, block, notification 서비스 레이어 (10개)", color: C.butter },
+                { dir: "providers/", desc: "Riverpod Provider — auth, items, trade, chat, leaf, badge, wishlist, notification, profile, block, invite, session (12개)", color: C.hotCoral },
               ].map((item, i) => (
                 <Card key={i} style={{ borderLeft: `3px solid ${item.color}` }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: C.offBlack, marginBottom: 3, fontFamily: "'Outfit', sans-serif" }}>{item.dir}</div>
@@ -647,12 +658,12 @@ export default function TechArchitecture() {
             <Section title="Feature 모듈" sub="features/" dark>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {[
-                  { name: "auth/", screens: "splash, onboarding(3장), login, location, first_leaf", icon: "🔐" },
-                  { name: "home/", screens: "home_screen, search_screen + item_grid, category_chips, sponsored_card", icon: "🏠" },
-                  { name: "item/", screens: "item_detail, seller_profile, upload(정보입력), preview, review_result", icon: "👕" },
-                  { name: "chat/", screens: "chat_list, chat_room + bubble, quick_replies, appointment_card", icon: "💬" },
-                  { name: "profile/", screens: "my_screen, edit_profile, settings + badge_progress, leaf_wallet, closet_tab", icon: "👤" },
-                  { name: "notification/", screens: "notification_screen (검수/채팅/거래/기부 알림)", icon: "🔔" },
+                  { name: "auth/", screens: "splash, onboarding(3장), login, phone_login, first_leaf", icon: "🔐" },
+                  { name: "home/", screens: "home_screen, search_screen + item_grid, category_chips(10개), sponsored_card", icon: "🏠" },
+                  { name: "item/", screens: "item_detail, seller_profile, upload(정보입력), preview, review_result, edit_item", icon: "👕" },
+                  { name: "chat/", screens: "chat_list, chat_room + pinned_item_card, quick_replies, trade_action_bar", icon: "💬" },
+                  { name: "profile/", screens: "my_screen, edit_profile, closet, settings, blocked_users, invite_code + badge, leaf_wallet", icon: "👤" },
+                  { name: "notification/", screens: "notification_screen (검수/채팅/예약/거래/초대/기부 알림)", icon: "🔔" },
                 ].map((f, i) => (
                   <div key={i} style={{
                     background: "#FFFFFF08", borderRadius: 14, padding: "14px",
@@ -671,12 +682,15 @@ export default function TechArchitecture() {
                 {[
                   "leafit_button (CTA)",
                   "leafit_chip (카테고리/사이즈)",
-                  "leafit_toast (토스트)",
-                  "leafit_bottom_sheet",
                   "leafit_modal",
-                  "leaf_icon (CustomPainter)",
+                  "leafit_bottom_sheet (20px radius)",
+                  "leafit_toast (토스트)",
                   "badge_icon + glow",
-                  "status_badge (채팅중/예약중/완료)",
+                  "leaf_icon (CustomPainter)",
+                  "leaf_balance_chip",
+                  "leafit_logo",
+                  "profile_avatar (이모지)",
+                  "status_badge (상태 뱃지)",
                   "tab_bar_layout (3탭)",
                 ].map((w, i) => (
                   <span key={i} style={{

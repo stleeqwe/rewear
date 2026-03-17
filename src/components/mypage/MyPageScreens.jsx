@@ -77,7 +77,27 @@ const NOTIFICATIONS = [
   { id: 2, icon: "💬", text: "초록옷장이 메시지 보냈어", time: "10분 전", unread: true },
   { id: 3, icon: "📌", text: '"COS 울코트" 예약 잠김!', time: "1시간 전", unread: true },
   { id: 4, icon: "🤝", text: '"자라 와이드팬츠" SWAP DONE!', time: "어제", unread: false },
-  { id: 5, icon: "🔥", text: '"H&M 티셔츠" 새 생명 ON', time: "3일 전", unread: false },
+  { id: 5, icon: "🎁", text: '"H&M 티셔츠" 새 생명 ON', time: "3일 전", unread: false },
+  { id: 6, icon: "🎉", text: "친구가 초대 코드로 가입! 🍃 +1", time: "5일 전", unread: false },
+];
+
+const PROFILE_EMOJIS = [
+  "🐶", "🐱", "🐰", "🦊", "🐻", "🐼",
+  "🐨", "🦁", "🐯", "🐸", "🐵", "🦄",
+  "🐧", "🐦", "🦋", "🐢", "🐙", "🦀",
+  "🐠", "🐬", "🦩", "🦜", "🐿️", "🦔",
+];
+
+const BLOCKED_USERS = [
+  { id: 1, nickname: "나쁜유저1", emoji: "🐶", blockedDate: "2일 전" },
+  { id: 2, nickname: "스팸계정", emoji: "🐱", blockedDate: "1주 전" },
+];
+
+const CLOSET_ITEMS = [
+  { id: 1, emoji: "👕", name: "유니클로 린넨 셔츠", status: "active", statusLabel: "판매중" },
+  { id: 2, emoji: "👖", name: "자라 와이드 팬츠", status: "reserved", statusLabel: "예약중" },
+  { id: 3, emoji: "🧥", name: "COS 울 블렌드 코트", status: "active", statusLabel: "판매중" },
+  { id: 4, emoji: "👗", name: "H&M 플로럴 원피스", status: "swapped", statusLabel: "교환완료" },
 ];
 
 // ── Shared Sub Components ──
@@ -1044,11 +1064,11 @@ export function ScreenProfileEdit() {
         overflowY: "auto",
         padding: "20px 16px",
       }}>
-        {/* Profile image */}
+        {/* Profile emoji */}
         <div style={{
           display: "flex",
           justifyContent: "center",
-          marginBottom: "24px",
+          marginBottom: "16px",
         }}>
           <div style={{
             width: "72px",
@@ -1062,7 +1082,7 @@ export function ScreenProfileEdit() {
             fontSize: "32px",
             position: "relative",
           }}>
-            {USER.badgeEmoji}
+            🦊
             <div style={{
               position: "absolute",
               bottom: "-2px",
@@ -1077,8 +1097,54 @@ export function ScreenProfileEdit() {
               fontSize: "11px",
               border: `2px solid ${C.chalk}`,
             }}>
-              📷
+              ✏️
             </div>
+          </div>
+        </div>
+
+        {/* Emoji picker */}
+        <div style={{ marginBottom: "18px" }}>
+          <div style={{
+            fontSize: "10px",
+            fontWeight: 600,
+            color: "#666",
+            marginBottom: "6px",
+          }}>
+            프로필 이모지 선택
+          </div>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(8, 1fr)",
+            gap: "6px",
+            background: "#FFF",
+            border: `1px solid ${C.mist}`,
+            borderRadius: "12px",
+            padding: "10px",
+          }}>
+            {PROFILE_EMOJIS.slice(0, 16).map((emoji, i) => (
+              <div key={i} style={{
+                width: "28px",
+                height: "28px",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "16px",
+                background: i === 3 ? `${C.lime}30` : "transparent",
+                border: i === 3 ? `2px solid ${C.lime}` : "2px solid transparent",
+                cursor: "default",
+              }}>
+                {emoji}
+              </div>
+            ))}
+          </div>
+          <div style={{
+            textAlign: "center",
+            fontSize: "10px",
+            color: "#BBB",
+            marginTop: "4px",
+          }}>
+            24종 동물 이모지 중 선택
           </div>
         </div>
 
@@ -1274,6 +1340,15 @@ export function ScreenSettings() {
           />
         </SettingsSection>
 
+        {/* User Management */}
+        <SettingsSection title="유저 관리">
+          <SettingsRow
+            label="차단 유저 관리"
+            rightContent={<span style={{ fontSize: "12px", color: "#CCC" }}>›</span>}
+            isLast
+          />
+        </SettingsSection>
+
         {/* Account */}
         <SettingsSection title="계정">
           <SettingsRow
@@ -1413,6 +1488,335 @@ export function ScreenNotifications() {
         ) : (
           <EmptyState message="알림 없음 — 조용하네 🤫" />
         )}
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════
+// 9. ScreenCloset — 내 옷장 (상태별 필터 포함)
+// ════════════════════════════════════════════════════════════
+export function ScreenCloset() {
+  const statusColors = {
+    active: { bg: `${C.neonMint}18`, color: C.forest },
+    reserved: { bg: `${C.butter}30`, color: "#8B6914" },
+    swapped: { bg: `${C.mist}`, color: "#888" },
+  };
+
+  return (
+    <div style={{
+      background: C.chalk,
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: fonts.body,
+    }}>
+      <BackHeader title="내 옷장" />
+
+      {/* Filter chips */}
+      <div style={{
+        display: "flex",
+        gap: "6px",
+        padding: "10px 14px",
+        overflowX: "auto",
+      }}>
+        {["전체", "판매중", "예약중", "교환완료"].map((f, i) => (
+          <div key={i} style={{
+            padding: "5px 12px",
+            borderRadius: "20px",
+            background: i === 0 ? C.forest : "#F0EDE5",
+            color: i === 0 ? "#FFF" : "#666",
+            fontSize: "10px",
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+            cursor: "default",
+            flexShrink: 0,
+          }}>
+            {f}
+          </div>
+        ))}
+      </div>
+
+      {/* Items grid */}
+      <div style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "8px 14px",
+      }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "8px",
+        }}>
+          {CLOSET_ITEMS.map((item) => {
+            const sc = statusColors[item.status] || statusColors.active;
+            return (
+              <div key={item.id} style={{
+                background: "#FFF",
+                borderRadius: "12px",
+                overflow: "hidden",
+                border: `1px solid ${C.mist}`,
+              }}>
+                <div style={{
+                  height: "100px",
+                  background: "#F0EDE5",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "32px",
+                  position: "relative",
+                }}>
+                  {item.emoji}
+                  <div style={{
+                    position: "absolute",
+                    top: "6px",
+                    right: "6px",
+                    background: sc.bg,
+                    color: sc.color,
+                    fontSize: "8px",
+                    fontWeight: 700,
+                    padding: "2px 7px",
+                    borderRadius: "6px",
+                  }}>
+                    {item.statusLabel}
+                  </div>
+                </div>
+                <div style={{ padding: "8px 10px" }}>
+                  <div style={{
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: C.offBlack,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}>
+                    {item.name}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════
+// 10. ScreenBlockedUsers — 차단 유저 관리
+// ════════════════════════════════════════════════════════════
+export function ScreenBlockedUsers() {
+  return (
+    <div style={{
+      background: C.chalk,
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: fonts.body,
+    }}>
+      <BackHeader title="차단 유저 관리" />
+
+      <div style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "14px",
+      }}>
+        {BLOCKED_USERS.length > 0 ? (
+          BLOCKED_USERS.map((user) => (
+            <div key={user.id} style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "12px 4px",
+              borderBottom: `1px solid ${C.mist}50`,
+            }}>
+              <div style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: "#F0EDE5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "18px",
+                flexShrink: 0,
+              }}>
+                {user.emoji}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: C.offBlack,
+                }}>
+                  {user.nickname}
+                </div>
+                <div style={{
+                  fontSize: "9px",
+                  color: "#BBB",
+                }}>
+                  차단일: {user.blockedDate}
+                </div>
+              </div>
+              <div style={{
+                background: "#FFF",
+                border: `1px solid ${C.hotCoral}40`,
+                color: C.hotCoral,
+                fontSize: "10px",
+                fontWeight: 600,
+                padding: "6px 12px",
+                borderRadius: "8px",
+                cursor: "default",
+                flexShrink: 0,
+              }}>
+                차단 해제
+              </div>
+            </div>
+          ))
+        ) : (
+          <EmptyState message="차단한 유저 없음" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════════════
+// 11. ScreenInviteCode — 초대 코드 + 공유
+// ════════════════════════════════════════════════════════════
+export function ScreenInviteCode() {
+  return (
+    <div style={{
+      background: C.chalk,
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: fonts.body,
+    }}>
+      <BackHeader title="초대 코드" />
+
+      <div style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "24px 20px",
+      }}>
+        {/* Icon */}
+        <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎁</div>
+
+        {/* Title */}
+        <div style={{
+          fontSize: "18px",
+          fontWeight: 800,
+          color: C.offBlack,
+          marginBottom: "6px",
+          textAlign: "center",
+        }}>
+          친구 데려오면 둘 다 🍃 +1
+        </div>
+        <div style={{
+          fontSize: "12px",
+          color: "#999",
+          marginBottom: "24px",
+          textAlign: "center",
+        }}>
+          내 초대 코드를 공유해서 같이 스왑하자
+        </div>
+
+        {/* Invite code card */}
+        <div style={{
+          background: C.smoke,
+          borderRadius: "18px",
+          padding: "24px 28px",
+          width: "100%",
+          textAlign: "center",
+          marginBottom: "20px",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+        }}>
+          <div style={{
+            fontSize: "9px",
+            fontWeight: 700,
+            color: C.mist,
+            letterSpacing: "3px",
+            textTransform: "uppercase",
+            marginBottom: "8px",
+          }}>
+            MY INVITE CODE
+          </div>
+          <div style={{
+            fontFamily: fonts.accent,
+            fontSize: "28px",
+            fontWeight: 800,
+            color: C.neonMint,
+            letterSpacing: "4px",
+            marginBottom: "4px",
+          }}>
+            LEAF2026
+          </div>
+        </div>
+
+        {/* QR placeholder */}
+        <div style={{
+          width: "120px",
+          height: "120px",
+          borderRadius: "14px",
+          background: "#FFF",
+          border: `1px solid ${C.mist}`,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "20px",
+        }}>
+          <div style={{
+            width: "80px",
+            height: "80px",
+            background: `${C.forest}10`,
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "28px",
+          }}>
+            📱
+          </div>
+          <div style={{ fontSize: "8px", color: "#BBB", marginTop: "4px" }}>QR 코드</div>
+        </div>
+
+        {/* Share buttons */}
+        <div style={{
+          display: "flex",
+          gap: "8px",
+          width: "100%",
+        }}>
+          <div style={{
+            flex: 1,
+            background: C.lime,
+            color: C.forest,
+            padding: "12px 16px",
+            borderRadius: "14px",
+            fontSize: "13px",
+            fontWeight: 700,
+            textAlign: "center",
+            cursor: "default",
+          }}>
+            링크 공유하기
+          </div>
+          <div style={{
+            flex: 1,
+            background: C.forest,
+            color: "#FFF",
+            padding: "12px 16px",
+            borderRadius: "14px",
+            fontSize: "13px",
+            fontWeight: 700,
+            textAlign: "center",
+            cursor: "default",
+          }}>
+            코드 복사하기
+          </div>
+        </div>
       </div>
     </div>
   );

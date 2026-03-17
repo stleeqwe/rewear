@@ -554,9 +554,9 @@ export function ScreenSellerProfile() {
    5. ScreenRegisterStep0  --  Product Info Input
    ========================================================================= */
 export function ScreenRegisterStep0() {
-  const categories = ["상의", "하의", "아우터", "원피스", "가방", "기타"];
-  const sizes      = ["XS", "S", "M", "L", "XL"];
-  const conditions  = ["새것같음", "거의 안입음", "양호"];
+  const categories = ["상의", "하의", "아우터", "원피스", "가방", "모자", "신발", "악세서리", "기타"];
+  const sizes      = ["XS", "S", "M", "L", "XL", "FREE"];
+  const conditions  = ["거의 새거", "양호", "사용감있음", "해짐"];
   const trades      = ["반값택배", "직거래", "일반택배"];
 
   const [cat, setCat]     = useState(0);
@@ -1024,6 +1024,125 @@ export function ScreenRegisterStep4() {
           홈으로
         </div>
       </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   10. ScreenEditItem  --  Edit existing item (pre-filled)
+   ========================================================================= */
+export function ScreenEditItem() {
+  const categories = ["상의", "하의", "아우터", "원피스", "가방", "모자", "신발", "악세서리", "기타"];
+  const sizes      = ["XS", "S", "M", "L", "XL", "FREE"];
+  const conditions  = ["거의 새거", "양호", "사용감있음", "해짐"];
+  const trades      = ["반값택배", "직거래", "일반택배"];
+
+  return (
+    <div style={{ padding: 14, background: C.chalk, height: "100%", overflowY: "auto" }}>
+      {/* Header */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
+      }}>
+        <span style={{ fontSize: 16, cursor: "default" }}>←</span>
+        <span style={{ fontSize: 15, fontWeight: 700 }}>아이템 수정</span>
+      </div>
+
+      {/* Photo area — pre-filled */}
+      <div
+        style={{
+          height: 140,
+          borderRadius: 14,
+          background: "linear-gradient(135deg, #E8E5DD 0%, #D5D0C8 100%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 48,
+          marginBottom: 8,
+          position: "relative",
+        }}
+      >
+        🧥
+        <div style={{
+          position: "absolute", top: 8, right: 8,
+          background: "rgba(0,0,0,0.5)", color: "#FFF",
+          fontSize: 9, fontWeight: 600, padding: "3px 8px",
+          borderRadius: 8,
+        }}>
+          사진 변경
+        </div>
+      </div>
+
+      {/* Thumbnails — pre-filled */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+        {["앞면", "뒷면", "+"].map((t, i) => (
+          <div
+            key={i}
+            style={{
+              width: 44, height: 44, borderRadius: 10,
+              border: i < 2 ? `2px solid ${C.forest}` : "1.5px dashed #DDD",
+              background: i < 2 ? "#E8F0E5" : C.chalk,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: i < 2 ? 10 : 14,
+              color: i < 2 ? C.forest : "#CCC",
+              fontWeight: 600, flexShrink: 0,
+            }}
+          >
+            {t}
+          </div>
+        ))}
+      </div>
+
+      {/* Category — pre-selected */}
+      <FieldLabel label="카테고리" />
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+        {categories.map((c, i) => (
+          <Chip key={i} text={c} active={i === 2} />
+        ))}
+      </div>
+
+      {/* Size — pre-selected */}
+      <FieldLabel label="사이즈" />
+      <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+        {sizes.map((s, i) => (
+          <Chip key={i} text={s} active={i === 2} />
+        ))}
+      </div>
+
+      {/* Condition — pre-selected */}
+      <FieldLabel label="상태" />
+      <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+        {conditions.map((c, i) => (
+          <Chip key={i} text={c} active={i === 0} />
+        ))}
+      </div>
+
+      {/* Description — pre-filled */}
+      <FieldLabel label="설명" />
+      <div
+        style={{
+          background: "#FFF",
+          border: `1.5px solid ${C.forest}40`,
+          borderRadius: 12,
+          padding: 10,
+          fontSize: 11,
+          color: C.offBlack,
+          minHeight: 52,
+          lineHeight: 1.5,
+          marginBottom: 12,
+        }}
+      >
+        작년 겨울에 구매했는데 2번 착용. 보풀 없고 상태 좋아요.
+      </div>
+
+      {/* Trading method — pre-selected */}
+      <FieldLabel label="거래 방식 (복수 선택)" />
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+        {trades.map((t, i) => (
+          <Chip key={i} text={t} active={i === 0 || i === 1} />
+        ))}
+      </div>
+
+      <ActionBtn text="수정 완료" bg={C.lime} color={C.forest} full />
     </div>
   );
 }

@@ -9,13 +9,13 @@ import { LeafitInline } from "./components/common/LeafitLogo";
 const pages = [
   { id: "plan", label: "사업 기획서", icon: "📄" },
   { id: "brand", label: "브랜딩", icon: "🎨" },
-  { id: "screen", label: "화면설계서 v2.1", icon: "📱" },
+  { id: "screen", label: "화면설계서 v2.2", icon: "📱" },
   { id: "tech", label: "시스템 아키텍처", icon: "⚙️" },
   { id: "colors", label: "컬러 팔레트", icon: "🌿" },
 ];
 
 export default function App() {
-  const [page, setPage] = useState("brand");
+  const [page, setPage] = useState("plan");
 
   return (
     <div style={{ minHeight: "100vh", background: "#F7F5F0" }}>

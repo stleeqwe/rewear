@@ -582,6 +582,30 @@ export default function Branding() {
           </div>
         </Section>
 
+        {/* === 프로필 이모지 시스템 === */}
+        <Section title="Profile Emoji System" sub="프로필 이모지">
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 16, lineHeight: 1.5 }}>
+            유저 프로필에 24개 동물 이모지 중 하나를 선택. 기본 프로필 이미지 대체.
+          </div>
+          <div style={{
+            display: "grid", gridTemplateColumns: "repeat(8, 1fr)", gap: 8,
+            background: "#FFF", borderRadius: 14, padding: "16px",
+            border: `1px solid ${C.mist}`, marginBottom: 12,
+          }}>
+            {["🐶","🐱","🐰","🦊","🐻","🐼","🐨","🦁","🐯","🐸","🐵","🦄","🐧","🐦","🦋","🐢","🐙","🦀","🐠","🐬","🦩","🦜","🐿️","🦔"].map((e, i) => (
+              <div key={i} style={{
+                width: 32, height: 32, borderRadius: "50%",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 18, background: i === 3 ? `${C.lime}25` : "transparent",
+                border: i === 3 ? `2px solid ${C.lime}` : "2px solid transparent",
+              }}>{e}</div>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: "#888", lineHeight: 1.6, textAlign: "center" }}>
+            프로필 편집에서 변경 가능. 이모지 테두리 색상은 뱃지 레벨에 따라 변경.
+          </div>
+        </Section>
+
         {/* === 타이포그래피 === */}
         <Section title="Typography" sub="15.3 타이포그래피">
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -645,6 +669,7 @@ export default function Branding() {
               { name: "Profile", value: "50% (circle)", preview: "50%" },
               { name: "Input", value: "12px", preview: 12 },
               { name: "Toast", value: "50px (pill)", preview: 50 },
+              { name: "Bottom Sheet", value: "20px (top)", preview: 20 },
               { name: "Modal", value: "20px", preview: 20 },
               { name: "Thumbnail", value: "12px", preview: 12 },
             ].map((item, i) => (

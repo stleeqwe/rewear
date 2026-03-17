@@ -17,7 +17,7 @@ const C = {
 };
 
 // ── Sample Data ──
-const CATEGORIES = ["전체", "상의", "하의", "아우터", "원피스"];
+const CATEGORIES = ["전체", "상의", "하의", "아우터", "원피스", "가방", "모자", "신발", "악세서리", "기타"];
 
 const ITEMS = [
   { id: 1, emoji: "👕", name: "유니클로 린넨 셔츠", size: "M", condition: "새것같음", neighborhood: "마포구", date: "3일 전", category: "상의" },
@@ -26,6 +26,10 @@ const ITEMS = [
   { id: 4, emoji: "👗", name: "H&M 플로럴 원피스", size: "S", condition: "새것같음", neighborhood: "용산구", date: "오늘", category: "원피스" },
   { id: 5, emoji: "👚", name: "무인양품 코튼 블라우스", size: "M", condition: "거의 안입음", neighborhood: "마포구", date: "2일 전", category: "상의" },
   { id: 6, emoji: "👖", name: "리바이스 501 데님", size: "28", condition: "빈티지 감성", neighborhood: "성동구", date: "4일 전", category: "하의" },
+  { id: 7, emoji: "👜", name: "COS 미니멀 토트백", size: "FREE", condition: "거의 새거", neighborhood: "강남구", date: "1일 전", category: "가방" },
+  { id: 8, emoji: "🧢", name: "나이키 볼캡", size: "FREE", condition: "양호", neighborhood: "마포구", date: "3일 전", category: "모자" },
+  { id: 9, emoji: "👟", name: "컨버스 척70 로우", size: "260", condition: "사용감있음", neighborhood: "용산구", date: "2일 전", category: "신발" },
+  { id: 10, emoji: "📿", name: "빈티지 실버 목걸이", size: "FREE", condition: "거의 새거", neighborhood: "서초구", date: "오늘", category: "악세서리" },
 ];
 
 const SPONSORED_ITEM = {

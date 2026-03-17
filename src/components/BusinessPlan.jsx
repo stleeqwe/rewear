@@ -21,13 +21,14 @@ const sections = [
   { id: "bm", label: "수익 모델" },
   { id: "inspection", label: "검수 & 분쟁" },
   { id: "badge", label: "순환 뱃지" },
+  { id: "kvp", label: "KVP" },
   { id: "popup", label: "팝업 스토어" },
 ];
 
 const flowSteps = [
-  { num: "01", title: "옷 업로드", desc: "유저가 안 입는 옷 사진(앞면·뒷면 최소 2장) 촬영 & 정보 입력", detail: "브랜드·카테고리·사이즈·상태 입력", icon: "📸" },
-  { num: "02", title: "AI 필터 + 검수", desc: "AI가 사진 품질·의류 적합성 1차 판단, 플랫폼이 최종 합격/불합격 결정", detail: "합격 시 1리프 지급 · 등급 구분 없음", icon: "🔍" },
-  { num: "03", title: "리프로 교환", desc: "다른 유저의 옷을 1리프로 가져갑니다", detail: "서비스 수수료 없음 · 택배비만 실비 부담", icon: "🛍️" },
+  { num: "01", title: "옷 업로드", desc: "유저가 안 입는 옷 사진(앞면·뒷면 최소 2장) 촬영 & 정보 입력", detail: "브랜드·10개 카테고리(전체/상의/하의/아우터/원피스/가방/모자/신발/악세서리/기타)·사이즈(XS/S/M/L/XL/FREE)·상태(거의 새거/양호/사용감있음/해짐) 입력", icon: "📸" },
+  { num: "02", title: "AI 필터 + 검수", desc: "AI가 사진 품질·의류 적합성 1차 판단, 플랫폼이 최종 합격/불합격 결정", detail: "합격 시 1리프 지급 · 등급 구분 없음 · 아이템 상태 7단계: reviewing / active / reserved / swapped / donated / rejected / deleted", icon: "🔍" },
+  { num: "03", title: "리프로 교환", desc: "다른 유저의 옷을 1리프로 가져갑니다", detail: "서비스 수수료 없음 · 택배비만 실비 부담 · 거래 상태 6단계: chatting / reserved / completed / cancelled / reported / refunded", icon: "🛍️" },
   { num: "04", title: "배송 or 직거래", desc: "편의점 반값택배 / 같은 동네면 직거래", detail: "앱 내 QR코드 → GS25·CU 무인택배기 연동", icon: "📦" },
   { num: "05", title: "기부", desc: "오래 안 팔리는 옷을 유저가 자발적으로 플랫폼에 기부", detail: "기부된 옷은 리폼하여 팝업 스토어 상품으로 활용", icon: "🎁" },
 ];
@@ -38,6 +39,26 @@ const badges = [
   { count: "30회", emoji: "🌳", name: "트리", desc: "작은 숲을 만들었어요", color: C.forest },
   { count: "100회", emoji: "🌍", name: "어스", desc: "지구가 고마워해요", color: "#1A4B6E" },
   { count: "1,000회", emoji: "🪐", name: "유니버스", desc: "전설의 순환러", color: C.butter },
+];
+
+const kvpCompetitors = [
+  { name: "당근마켓", essence: "현금 거래", currency: "원(₩)", motive: "수익 실현", value: "시장 가격", emotion: "없음" },
+  { name: "번개장터", essence: "현금 거래", currency: "원(₩)", motive: "수익 실현", value: "시장 가격", emotion: "없음" },
+  { name: "의류수거함", essence: "폐기/재활용", currency: "없음", motive: "처분", value: "0원", emotion: "미약" },
+  { name: "LEAFIT", essence: "순환 나눔", currency: "리프(🍃)", motive: "연대 + 만족", value: "모두 동등", emotion: "핵심", highlight: true },
+];
+
+const kvpTimingData = [
+  { label: "해외 검증", icon: "🌍", text: "아일랜드 Nuw — 동일 모델로 12개월 리텐션 88% 달성" },
+  { label: "국내 트렌드", icon: "🔥", text: "Gen Z 빈티지·스왑 문화 급성장, 플리마켓·옷장교환 행사 확산" },
+  { label: "인프라", icon: "📦", text: "편의점 반값택배 1,600원 + 동네 직거래 문화(당근 인프라)" },
+];
+
+const kvpChecklist = [
+  { situation: "기능 설계 시", question: "해당 기능이 스왑 자체를 보상으로 인식하게 하는가", icon: "⚙️" },
+  { situation: "디자인 결정 시", question: "해당 디자인이 커뮤니티적 연대감을 형성하는가", icon: "🎨" },
+  { situation: "카피 작성 시", question: "해당 카피가 순환을 자연스럽고 매력적인 문화로 전달하는가", icon: "✍️" },
+  { situation: "마케팅 기획 시", question: "해당 메시지가 타겟 유저의 정서적 충족감에 도달하는가", icon: "📣" },
 ];
 
 const popupZones = [
@@ -160,6 +181,259 @@ export default function BusinessPlan() {
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "28px 20px 60px" }}>
 
+        {/* === KVP === */}
+        {activeSection === "kvp" && (
+          <div>
+            {/* 01 서비스 정체성 */}
+            <Section title="리핏은 '헌 옷 처리 서비스'가 아니다" sub="01 — Service Identity">
+              <p style={pStyle}>
+                헌 옷을 처리하는 방법은 이미 다수 존재한다. 중고거래 플랫폼에 등록하거나, 의류 수거함에 투입할 수 있다. 리핏이 지향하는 것은 이와 본질적으로 다르다.
+              </p>
+            </Section>
+
+            <Section title="리핏이 만드는 것" sub="Core Direction" dark>
+              <div style={{
+                background: "#FFFFFF08", borderRadius: 16, padding: "24px 20px",
+                border: "1px solid #FFFFFF10", textAlign: "center",
+              }}>
+                <div style={{
+                  fontSize: 28, fontWeight: 800, color: C.lime, lineHeight: 1.4,
+                  marginBottom: 16,
+                }}>
+                  스왑이 자연스러운<br />문화를 형성하는 플랫폼
+                </div>
+                <div style={{ fontSize: 14, color: "#A8D5A0", lineHeight: 1.8 }}>
+                  환경을 위한 희생이나 참여가 아니라,<br />
+                  옷을 주고받는 행위 자체가 당연하고<br />
+                  매력적인 소비 방식으로 인식되는 문화를 만든다.
+                </div>
+              </div>
+            </Section>
+
+            {/* 02 핵심 인사이트 */}
+            <Section title="핵심 인사이트" sub="02 — Core Insight">
+              <p style={pStyle}>
+                알라딘에서 중고 서적을 판매할 수 있다. 그런데 만약, 다 읽은 문학 소설과 시집을 서로 교환할 수 있는 플랫폼이 존재한다고 가정해보자.
+              </p>
+              <p style={pStyle}>
+                이 플랫폼에서는 책과 책의 교환만 이루어진다. 화폐라는 경제적 우위가 개입하지 않지만, 이용자가 손해를 보는 것도 아니다.
+              </p>
+              <p style={pStyle}>
+                내가 읽은 시집을 누군가 읽게 되고, 나는 다른 사람이 읽던 소설을 만나게 된다. 이 과정에서 이용자 간에 느슨하지만 분명한 연대가 형성된다. "같은 방식으로 책을 즐기는 사람들"이라는 공유된 감각이다.
+              </p>
+            </Section>
+
+            <Section title="" sub="The Principle" dark>
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div style={{
+                  fontSize: 22, fontWeight: 800, color: C.lime, lineHeight: 1.5,
+                  marginBottom: 20,
+                }}>
+                  "책이든 옷이든,<br />가격이 사라지는 순간<br />교환은 거래가 아니라<br />나눔이 된다."
+                </div>
+                <div style={{
+                  width: 40, height: 2, background: C.lime, margin: "0 auto 20px", borderRadius: 2, opacity: 0.5,
+                }} />
+                <div style={{ fontSize: 14, color: "#A8D5A0", lineHeight: 1.8 }}>
+                  리핏이 만들고자 하는 것은<br />
+                  바로 이 나눔에서 비롯되는 <span style={{ color: C.lime, fontWeight: 700 }}>연대</span>이다.
+                </div>
+              </div>
+            </Section>
+
+            {/* 03 타겟 유저 */}
+            <Section title="타겟 유저 정의" sub="03 — Target User">
+              <p style={pStyle}>
+                리핏의 타겟은 <strong>옷을 교환하는 행위 그 자체에서 충족감을 느끼는 유저</strong>이다.
+              </p>
+              <p style={pStyle}>
+                더 이상 입지 않지만 아직 상태가 양호한 옷을 올리고, 동시에 타인의 그러한 옷을 기대한다. 이 주고받음 안에서 리핏 고유의 커뮤니티적·소셜한 연대감이 형성된다.
+              </p>
+            </Section>
+
+            <Section title="유저 만족 구조" sub="Satisfaction Model" dark>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <DarkCard style={{ background: "#FFFFFF08", border: "1px solid #FFFFFF10" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 12, background: `${C.lime}20`,
+                      display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
+                    }}>💰</div>
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: C.lime }}>경제적 만족</div>
+                      <div style={{ fontSize: 11, color: "#888", fontFamily: "'Outfit', sans-serif" }}>50%</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#CCC", lineHeight: 1.7 }}>
+                    현금 지출 없이 옷장이 갱신된다는 것.<br />
+                    안 입는 옷이 적체되는 대신, 입고 싶은 옷으로 교체된다는 것.
+                  </div>
+                </DarkCard>
+
+                <DarkCard style={{ background: "#FFFFFF08", border: "1px solid #FFFFFF10" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 12, background: `${C.neonMint}20`,
+                      display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22,
+                    }}>💚</div>
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: C.neonMint }}>정서적 만족</div>
+                      <div style={{ fontSize: 11, color: "#888", fontFamily: "'Outfit', sans-serif" }}>50%</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#CCC", lineHeight: 1.7 }}>
+                    "나와 유사한 감각의 사람들과 옷을 주고받고 있다"는 소속감.<br />
+                    순환경제에 참여하고 있다는 의미적 보상.
+                  </div>
+                </DarkCard>
+              </div>
+
+              <div style={{
+                textAlign: "center", marginTop: 20, padding: "16px",
+                background: `${C.lime}10`, borderRadius: 12, border: `1px solid ${C.lime}30`,
+              }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.lime }}>
+                  이 연대감을 생성하는 것이 리핏 서비스의 핵심 목적이다.
+                </div>
+              </div>
+            </Section>
+
+            {/* 04 경쟁 환경 */}
+            <Section title="경쟁 환경과 세그먼테이션" sub="04 — Competitive Landscape">
+              <p style={pStyle}>
+                중고거래 플랫폼 및 의류 처리 업체는 리핏의 경쟁 대상이 아니다. <strong>리핏은 기존에 존재하지 않던 시장을 개척한다.</strong>
+              </p>
+            </Section>
+
+            <Section title="포지셔닝 비교" sub="Positioning Map" dark>
+              <div style={{ overflowX: "auto" }}>
+                <div style={{
+                  display: "grid", gridTemplateColumns: "100px repeat(4, 1fr)",
+                  gap: 1, background: "#FFFFFF15", borderRadius: 12, overflow: "hidden",
+                  minWidth: 500,
+                }}>
+                  {["", "당근마켓", "번개장터", "의류수거함", "LEAFIT"].map((h, i) => (
+                    <div key={i} style={{
+                      padding: "10px 12px", fontSize: 11, fontWeight: 700,
+                      background: i === 4 ? C.lime : "#FFFFFF10",
+                      color: i === 4 ? C.forest : i === 0 ? "#888" : "#CCC",
+                      textAlign: "center",
+                    }}>{h}</div>
+                  ))}
+                  {[
+                    { label: "본질", key: "essence" },
+                    { label: "화폐", key: "currency" },
+                    { label: "유저 동기", key: "motive" },
+                    { label: "옷의 가치", key: "value" },
+                    { label: "정서적 보상", key: "emotion" },
+                  ].map((row) => [
+                    <div key={`l-${row.key}`} style={{
+                      padding: "10px 12px", fontSize: 11, fontWeight: 600,
+                      background: "#FFFFFF05", color: C.lime, textAlign: "center",
+                    }}>{row.label}</div>,
+                    ...kvpCompetitors.map((c, j) => (
+                      <div key={`${row.key}-${j}`} style={{
+                        padding: "10px 12px", fontSize: 12,
+                        background: c.highlight ? `${C.lime}10` : "#FFFFFF05",
+                        color: c.highlight ? C.lime : "#BBB",
+                        textAlign: "center",
+                        fontWeight: c.highlight ? 600 : 400,
+                      }}>{c[row.key]}</div>
+                    ))
+                  ])}
+                </div>
+              </div>
+            </Section>
+
+            {/* 05 시장 타이밍 */}
+            <Section title="시장 타이밍" sub="05 — Market Timing">
+              <p style={pStyle}>
+                당근마켓에서 의류 거래가 부진한 원인은 수요 부재가 아니다. 만원 이하 의류에 적정 가격을 책정하기 어렵고, 택배비가 옷 가격의 절반 이상을 차지하여 거래 자체가 성립하지 않는 구조적 문제이다.
+              </p>
+              <Card style={{ background: `${C.butter}15`, border: `1px solid ${C.butter}40` }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: C.offBlack, marginBottom: 4 }}>핵심 진단</div>
+                <div style={{ fontSize: 13, color: "#666", lineHeight: 1.7 }}>
+                  <strong>수요는 존재하나, 구조가 이를 가로막고 있다.</strong><br />
+                  리핏은 가격이라는 장벽을 제거하고, 편의점 반값택배(1,600원) 및 동네 직거래 인프라를 활용하여 이 구조적 문제를 해결한다.
+                </div>
+              </Card>
+            </Section>
+
+            <Section title="시장 검증 근거" sub="Validation" dark>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {kvpTimingData.map((item, i) => (
+                  <DarkCard key={i} style={{ background: "#FFFFFF08", border: "1px solid #FFFFFF10" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                      <div style={{
+                        width: 40, height: 40, borderRadius: 10, background: `${C.lime}15`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 20, flexShrink: 0,
+                      }}>{item.icon}</div>
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: C.lime, marginBottom: 4 }}>{item.label}</div>
+                        <div style={{ fontSize: 13, color: "#CCC", lineHeight: 1.6 }}>{item.text}</div>
+                      </div>
+                    </div>
+                  </DarkCard>
+                ))}
+              </div>
+            </Section>
+
+            {/* 06 KVP 선언 */}
+            <Section title="Key Value Proposition" sub="06 — KVP" dark>
+              <div style={{
+                textAlign: "center", padding: "32px 16px",
+                background: `${C.lime}08`, borderRadius: 16, border: `1px solid ${C.lime}20`,
+                marginBottom: 20,
+              }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 700, letterSpacing: 3, color: C.neonMint,
+                  marginBottom: 12, fontFamily: "'Outfit', sans-serif",
+                }}>LEAFIT KVP</div>
+                <div style={{
+                  fontSize: 26, fontWeight: 800, color: C.lime, lineHeight: 1.4, marginBottom: 16,
+                }}>
+                  "스왑 자체가 보상이 되는<br />순환 패션 커뮤니티"
+                </div>
+                <div style={{
+                  width: 40, height: 2, background: C.lime, margin: "0 auto", borderRadius: 2, opacity: 0.4,
+                }} />
+              </div>
+            </Section>
+
+            <Section title="의사결정 프레임워크" sub="Decision Framework">
+              <p style={{ ...pStyle, marginBottom: 20 }}>
+                본 KVP는 향후 <strong>모든 태스크의 의사결정 기준</strong>으로 기능한다.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {kvpChecklist.map((item, i) => (
+                  <Card key={i} style={{
+                    display: "flex", alignItems: "flex-start", gap: 14,
+                    padding: "16px 18px",
+                    border: `1px solid ${C.mist}`,
+                  }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 10,
+                      background: C.forest, color: C.lime,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 18, flexShrink: 0,
+                    }}>{item.icon}</div>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: C.forest, marginBottom: 4 }}>
+                        {item.situation}
+                      </div>
+                      <div style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>
+                        {item.question}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+          </div>
+        )}
+
         {/* === SUMMARY === */}
         {activeSection === "summary" && (
           <div>
@@ -276,9 +550,40 @@ export default function BusinessPlan() {
               </div>
             </Section>
 
+            <Section title="로그인 & 인증" sub="Authentication">
+              <p style={pStyle}>LEAFIT은 빠르고 간편한 로그인 경험과 비회원 탐색을 동시에 지원합니다.</p>
+              {[
+                { title: "카카오 로그인", desc: "국내 유저 대다수가 사용하는 카카오 계정으로 원터치 가입/로그인", icon: "💬" },
+                { title: "Apple 로그인", desc: "iOS 유저를 위한 Apple ID 기반 로그인 지원", icon: "🍎" },
+                { title: "전화번호 OTP 로그인", desc: "전화번호 입력 후 일회용 인증코드(OTP)로 간편 로그인", icon: "📱" },
+                { title: "둘러보기(Anonymous) 모드", desc: "로그인 없이 피드 탐색 가능. 교환·업로드 등 핵심 기능 사용 시 로그인 유도", icon: "👀" },
+              ].map((item, i) => (
+                <Card key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", borderLeft: `3px solid ${C.forest}` }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${C.forest}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{item.icon}</div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.offBlack, marginBottom: 4 }}>{item.title}</div>
+                    <div style={{ fontSize: 12, color: "#888", lineHeight: 1.6 }}>{item.desc}</div>
+                  </div>
+                </Card>
+              ))}
+            </Section>
+
+            <Section title="탐색 & 정렬" sub="Browse & Sort">
+              <p style={pStyle}>유저가 원하는 옷을 빠르게 찾을 수 있도록 10개 카테고리 필터(전체/상의/하의/아우터/원피스/가방/모자/신발/악세서리/기타)와 정렬 옵션을 제공합니다.</p>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                {["최신순", "조회순"].map((opt, i) => (
+                  <span key={i} style={{
+                    fontSize: 12, background: `${C.forest}10`, color: C.forest,
+                    padding: "6px 14px", borderRadius: 20, fontWeight: 600,
+                    border: `1px solid ${C.forest}25`,
+                  }}>{opt}</span>
+                ))}
+              </div>
+            </Section>
+
             <Section title="리프 경제 설계" sub="Leaf Economy" dark>
               <div style={{ fontSize: 13, color: "#E0E0E0", lineHeight: 1.8, marginBottom: 16 }}>
-                리프는 <strong style={{ color: C.lime }}>1종류</strong>이며 등급이 없습니다. <strong style={{ color: C.lime }}>1리프 = 1벌</strong>이라는 단순한 규칙이 핵심입니다. 현금 환전은 불가하며, 플랫폼 내 교환과 팝업 스토어에서만 사용됩니다.
+                리프는 <strong style={{ color: C.lime }}>1종류</strong>이며 등급이 없습니다. <strong style={{ color: C.lime }}>1리프 = 1벌</strong>이라는 단순한 규칙이 핵심입니다. 현금 환전은 불가하며, 플랫폼 내 교환과 팝업 스토어에서만 사용됩니다. 리프 거래는 6가지 유형으로 기록됩니다: <strong style={{ color: C.neonMint }}>signup_bonus / upload / swap / invite_bonus / refund / donate</strong>.
               </div>
               <div style={{
                 display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr",
@@ -339,6 +644,24 @@ export default function BusinessPlan() {
                     <div style={{ fontSize: 12, color: "#888", lineHeight: 1.6 }}>{item.desc}</div>
                   </div>
                 </Card>
+              ))}
+            </Section>
+
+            <Section title="보안 & 안전 정책" sub="Security & Safety" dark>
+              <p style={{ fontSize: 13, color: "#E0E0E0", lineHeight: 1.8, marginBottom: 16, margin: "0 0 16px" }}>유저 보호와 플랫폼 건전성을 위해 아래 보안·안전 정책을 운영합니다.</p>
+              {[
+                { title: "중복 로그인 방지", desc: "active_session_id 기반으로 동시 로그인을 차단합니다. 새 기기에서 로그인 시 기존 세션은 자동 만료됩니다.", icon: "🔐" },
+                { title: "AI 검수 실패 시 계정 정지", desc: "5회 연속 AI 검수 실패 시 계정이 자동 정지됩니다. 정지 해제는 고객센터를 통해 심사 후 진행됩니다.", icon: "🚫" },
+                { title: "신고 시스템", desc: "단계적 제재를 적용합니다. 1회 신고 시 경고 → 2회 신고 시 7일 이용 제한 → 3회 신고 시 영구 정지", icon: "⚠️" },
+                { title: "차단 유저 시스템", desc: "유저가 특정 유저를 차단하면 해당 유저의 아이템·채팅·프로필이 노출되지 않습니다.", icon: "🛡️" },
+              ].map((item, i) => (
+                <DarkCard key={i} style={{ background: "#FFFFFF08", border: "1px solid #FFFFFF10", display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `${C.lime}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{item.icon}</div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.lime, marginBottom: 4 }}>{item.title}</div>
+                    <div style={{ fontSize: 12, color: "#CCC", lineHeight: 1.6 }}>{item.desc}</div>
+                  </div>
+                </DarkCard>
               ))}
             </Section>
           </div>
@@ -442,7 +765,7 @@ export default function BusinessPlan() {
               {[
                 { step: "AI 1차 필터", desc: "사진 품질, 의류 여부, 명백한 불합격 요소를 자동 판별하여 업로드 차단 또는 통과", icon: "🤖" },
                 { step: "플랫폼 2차 검수", desc: "24시간 내 검수자가 최종 합격/불합격 판정. 데이터가 쌓이면 AI 자동 승인 비율을 점진적으로 확대", icon: "👁️" },
-                { step: "제재 시스템", desc: "불합격 자체는 패널티 없음. 단, 3회 연속 불합격 시 일정 기간 업로드 제한", icon: "⚠️" },
+                { step: "제재 시스템", desc: "불합격 자체는 패널티 없음. 단, 5회 연속 AI 검수 실패 시 계정 자동 정지. 신고 제재: 1회 경고 → 2회 7일 제한 → 3회 영구 정지", icon: "⚠️" },
               ].map((item, i) => (
                 <Card key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", borderLeft: `3px solid ${C.forest}` }}>
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: `${C.forest}12`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{item.icon}</div>
